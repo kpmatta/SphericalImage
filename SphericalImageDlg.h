@@ -31,8 +31,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnStnClickedStaticFace1();
-	afx_msg void OnStnDblclickStaticFace1();
 	afx_msg void OnBnClickedButton1();
 	CStatic m_face_1;
 	afx_msg void OnBnClickedOk();

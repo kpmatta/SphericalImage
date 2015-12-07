@@ -63,8 +63,6 @@ BEGIN_MESSAGE_MAP(CSphericalImageDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_STN_CLICKED(IDC_STATIC_FACE_1, &CSphericalImageDlg::OnStnClickedStaticFace1)
-	ON_STN_DBLCLK(IDC_STATIC_FACE_1, &CSphericalImageDlg::OnStnDblclickStaticFace1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CSphericalImageDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDOK, &CSphericalImageDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
@@ -155,59 +153,6 @@ void CSphericalImageDlg::OnPaint()
 HCURSOR CSphericalImageDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
-}
-
-
-
-void CSphericalImageDlg::OnStnClickedStaticFace1()
-{
-	CImage img1;
-	int dimx = 100, dimy = 100;
-	img1.Load(_T("D:\\Krishna\\roses.jpg"));
-	//filename = path on local system to the bitmap
-
-	CDC *screenDC = GetDC();
-	CDC mDC;
-	mDC.CreateCompatibleDC(screenDC);
-	CBitmap b;
-	b.CreateCompatibleBitmap(screenDC, dimx, dimy);
-
-	CBitmap *pob = mDC.SelectObject(&b);
-	mDC.SetStretchBltMode(HALFTONE);
-	img1.StretchBlt(mDC.m_hDC, 0, 0, dimx, dimy, 0, 0, img1.GetWidth(), img1.GetHeight(), SRCCOPY);
-	mDC.SelectObject(pob);
-
-	
-
-	m_face_1.SetBitmap((HBITMAP)b.Detach());
-	//m_pictureCtrl.SetBitmap((HBITMAP)b.Detach());
-	ReleaseDC(screenDC);
-}
-
-
-void CSphericalImageDlg::OnStnDblclickStaticFace1()
-{
-	CImage img1;
-	int dimx = 100, dimy = 100;
-	img1.Load(_T("D:\\Krishna\\roses.jpg"));
-	//filename = path on local system to the bitmap
-
-	CDC *screenDC = GetDC();
-	CDC mDC;
-	mDC.CreateCompatibleDC(screenDC);
-	CBitmap b;
-	b.CreateCompatibleBitmap(screenDC, dimx, dimy);
-
-	CBitmap *pob = mDC.SelectObject(&b);
-	mDC.SetStretchBltMode(HALFTONE);
-	img1.StretchBlt(mDC.m_hDC, 0, 0, dimx, dimy, 0, 0, img1.GetWidth(), img1.GetHeight(), SRCCOPY);
-	mDC.SelectObject(pob);
-
-
-
-	m_face_1.SetBitmap((HBITMAP)b.Detach());
-	//m_pictureCtrl.SetBitmap((HBITMAP)b.Detach());
-	ReleaseDC(screenDC);
 }
 
 void CSphericalImageDlg::OnBnClickedButton1()
