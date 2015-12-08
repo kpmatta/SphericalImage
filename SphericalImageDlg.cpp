@@ -268,6 +268,7 @@ void CSphericalImageDlg::LoadImageToControl(CPictureCtrl* pActiveCtrl, LPCTSTR l
 	CRect rect;
 	CImage cImage;
 
+	pActiveCtrl->m_csImageName = lpszImagePath;
 	pActiveCtrl->GetWindowRect(&rect);
 
 	cImage.Load(lpszImagePath);

@@ -11,17 +11,12 @@ public:
 	CPictureCtrl();
 	virtual ~CPictureCtrl();
 
-	//Loads an image from a file
-	BOOL LoadFromFile(CString &szFilePath);
-
+	CString m_csImageName;
 
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
-	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
 };
 
 
