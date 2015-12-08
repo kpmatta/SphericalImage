@@ -6,6 +6,7 @@
 #include "SphericalImage.h"
 #include "SphericalImageDlg.h"
 #include "afxdialogex.h"
+#include "PictureCtrl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -56,7 +57,12 @@ CSphericalImageDlg::CSphericalImageDlg(CWnd* pParent /*=NULL*/)
 void CSphericalImageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_STATIC_FACE_1, m_face_1);
+	DDX_Control(pDX, IDC_STATIC_FACE_FRONT, m_FrontCtrl);
+	DDX_Control(pDX, IDC_STATIC_FACE_LEFT, m_LeftCtrl);
+	DDX_Control(pDX, IDC_STATIC_FACE_RIGHT, m_RightCtrl);
+	DDX_Control(pDX, IDC_STATIC_FACE_BACK, m_BackCtrl);
+	DDX_Control(pDX, IDC_STATIC_FACE_TOP, m_TopCtrl);
+	DDX_Control(pDX, IDC_STATIC_FACE_DOWN, m_DownCtrl);
 }
 
 BEGIN_MESSAGE_MAP(CSphericalImageDlg, CDialogEx)
@@ -65,6 +71,10 @@ BEGIN_MESSAGE_MAP(CSphericalImageDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CSphericalImageDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDOK, &CSphericalImageDlg::OnBnClickedOk)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_CONTEXTMENU()
+	ON_COMMAND(ID_LOADIMAGE_LOADIMAGE, &CSphericalImageDlg::OnLoadimageLoadimage)
+	ON_WM_DROPFILES()
 END_MESSAGE_MAP()
 
 
@@ -100,7 +110,7 @@ BOOL CSphericalImageDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-
+	::DragAcceptFiles(m_hWnd, true);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -142,7 +152,7 @@ void CSphericalImageDlg::OnPaint()
 	}
 	else
 	{
-		m_face_1.UpdateWindow();
+		m_FrontCtrl.UpdateWindow();
 
 		CDialogEx::OnPaint();
 	}
@@ -159,7 +169,7 @@ void CSphericalImageDlg::OnBnClickedButton1()
 {
 	CImage img1;
 	int dimx = 340, dimy = 397;
-	img1.Load(_T("D:\\Krishna\\roses.jpg"));
+	img1.Load(_T("D:\\Krishna\\Projects\\SphericalImage\\Images\\Front.bmp"));
 	//filename = path on local system to the bitmap
 
 	CDC *screenDC = GetDC();
@@ -174,7 +184,7 @@ void CSphericalImageDlg::OnBnClickedButton1()
 	mDC.SelectObject(pob);
 
 	//m_face_1.ModifyStyle(0xF, SS_BITMAP, SWP_NOSIZE);
-	m_face_1.SetBitmap((HBITMAP)b.Detach());
+	m_FrontCtrl.SetBitmap((HBITMAP)b.Detach());
 	//m_pictureCtrl.SetBitmap((HBITMAP)b.Detach());
 	ReleaseDC(screenDC);
 }
@@ -184,4 +194,162 @@ void CSphericalImageDlg::OnBnClickedOk()
 {
 	// TODO: Add your control notification handler code here
 	CDialogEx::OnOK();
+}
+
+
+void CSphericalImageDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+CPictureCtrl* CSphericalImageDlg::GetActivePictureControl(CPoint point)
+{
+	CPictureCtrl* pActiveCtrl = NULL;
+	CRect rectCtrl;
+
+	m_FrontCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_FrontCtrl;
+	}
+
+	m_LeftCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_LeftCtrl;
+	}
+
+	m_RightCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_RightCtrl;
+	}
+
+	m_BackCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_BackCtrl;
+	}
+
+	m_TopCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_TopCtrl;
+	}
+
+	m_DownCtrl.GetWindowRect(&rectCtrl);
+	if (rectCtrl.PtInRect(point))
+	{
+		return &m_DownCtrl;
+	}
+
+	return NULL;;
+}
+
+void CSphericalImageDlg::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
+{
+	m_pActiveCtrl = GetActivePictureControl(point);
+	if (m_pActiveCtrl)
+	{
+		CMenu mnuPopup;
+		mnuPopup.LoadMenu(IDR_POPUP_MENU);
+
+		CMenu *pSub = mnuPopup.GetSubMenu(0);
+		pSub->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+	}
+}
+
+void CSphericalImageDlg::LoadImageToControl(CPictureCtrl* pActiveCtrl, LPCTSTR lpszImagePath)
+{
+	CBitmap b;
+	CDC mDC;
+	CRect rect;
+	CImage cImage;
+
+	pActiveCtrl->GetWindowRect(&rect);
+
+	cImage.Load(lpszImagePath);
+
+	CDC *screenDC = GetDC();
+	mDC.CreateCompatibleDC(screenDC);
+
+	b.CreateCompatibleBitmap(screenDC, rect.Width(), rect.Height());
+
+	CBitmap *pob = mDC.SelectObject(&b);
+	mDC.SetStretchBltMode(HALFTONE);
+	cImage.StretchBlt(mDC.m_hDC, 0, 0, rect.Width(), rect.Height(), 0, 0, cImage.GetWidth(), cImage.GetHeight(), SRCCOPY);
+	mDC.SelectObject(pob);
+
+	pActiveCtrl->SetBitmap((HBITMAP)b.Detach());
+	ReleaseDC(screenDC);
+}
+
+void CSphericalImageDlg::OnLoadimageLoadimage()
+{
+	if (m_pActiveCtrl)
+	{
+		TCHAR szFilters[] = _T("BMP Files (*.bmp)|*.bmp|PNG Files (*.png)|*.png|");
+
+		CFileDialog fileDlg(TRUE, _T("bmp"), _T("*.bmp"),
+			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters, this);
+
+		if (fileDlg.DoModal() == IDOK)
+		{
+			CString csImagePath = fileDlg.GetPathName();
+			LoadImageToControl(m_pActiveCtrl, csImagePath);
+
+			//CBitmap b;
+			//CDC mDC;
+			//CRect rect;
+			//m_pActiveCtrl->GetWindowRect(&rect);
+
+
+			//CString csImagePath = fileDlg.GetPathName();
+
+			//
+
+			//CImage cImage;
+			//cImage.Load(csImagePath);
+			////filename = path on local system to the bitmap
+
+			//CDC *screenDC = GetDC();
+			//mDC.CreateCompatibleDC(screenDC);
+
+			//b.CreateCompatibleBitmap(screenDC, rect.Width(), rect.Height());
+
+			//CBitmap *pob = mDC.SelectObject(&b);
+			//mDC.SetStretchBltMode(HALFTONE);
+			//cImage.StretchBlt(mDC.m_hDC, 0, 0, rect.Width(), rect.Height(), 0, 0, cImage.GetWidth(), cImage.GetHeight(), SRCCOPY);
+			//mDC.SelectObject(pob);
+
+			//m_pActiveCtrl->SetBitmap((HBITMAP)b.Detach());
+			//ReleaseDC(screenDC);
+		}
+	}
+}
+
+
+void CSphericalImageDlg::OnDropFiles(HDROP hDropInfo)
+{
+	// TODO: Add your message handler code here and/or call default
+	int nCntFiles = DragQueryFile(hDropInfo, -1, 0, 0);
+	if (nCntFiles)
+	{
+		CPoint point;
+		CString csFileName;
+		DragQueryPoint(hDropInfo, &point);
+		ClientToScreen(&point);
+		CPictureCtrl* pActiveCtrl = GetActivePictureControl(point);
+		if (pActiveCtrl)
+		{
+			::DragQueryFile(hDropInfo, 0, csFileName.GetBuffer(_MAX_PATH), _MAX_PATH);
+			csFileName.ReleaseBuffer();
+
+			LoadImageToControl(pActiveCtrl, csFileName);
+		}
+	}
+
+	CDialogEx::OnDropFiles(hDropInfo);
 }

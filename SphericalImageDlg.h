@@ -4,6 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
+#include "PictureCtrl.h"
 
 
 // CSphericalImageDlg dialog
@@ -32,6 +33,19 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButton1();
-	CStatic m_face_1;
+	CPictureCtrl* m_pActiveCtrl = NULL;
+	CPictureCtrl m_FrontCtrl;
+	CPictureCtrl m_LeftCtrl;
+	CPictureCtrl m_RightCtrl;
+	CPictureCtrl m_BackCtrl;
+	CPictureCtrl m_TopCtrl;
+	CPictureCtrl m_DownCtrl;
+
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	CPictureCtrl* GetActivePictureControl(CPoint point);
+	void LoadImageToControl(CPictureCtrl* pActiveCtrl, LPCTSTR lpszImagePath);
+	afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
+	afx_msg void OnLoadimageLoadimage();
+	afx_msg void OnDropFiles(HDROP hDropInfo);
 };
