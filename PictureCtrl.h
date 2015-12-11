@@ -7,6 +7,8 @@ class CPictureCtrl : public CStatic
 {
 	DECLARE_DYNAMIC(CPictureCtrl)
 
+	CString m_csImagePath = _T("");
+
 public:
 	CPictureCtrl();
 	virtual ~CPictureCtrl();

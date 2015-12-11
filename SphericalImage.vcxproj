@@ -101,6 +101,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CubeToSphere.h" />
     <ClInclude Include="PictureCtrl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SphericalImage.h" />
@@ -109,6 +110,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CubeToSphere.cpp" />
     <ClCompile Include="PictureCtrl.cpp" />
     <ClCompile Include="SphericalImage.cpp" />
     <ClCompile Include="SphericalImageDlg.cpp" />

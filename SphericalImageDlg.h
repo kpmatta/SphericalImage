@@ -21,6 +21,7 @@ public:
 
 
 // Implementation
+	bool GetSphereFromCube(TCHAR** cubeNames);
 protected:
 	HICON m_hIcon;
 
@@ -31,7 +32,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedButton1();
+	//afx_msg void OnBnClickedButton1();
 	CStatic m_face_1;
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedBtnSphere();
 };
